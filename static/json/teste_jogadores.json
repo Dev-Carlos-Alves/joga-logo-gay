@@ -13,13 +13,13 @@
   },
   {
     "id": 3,
-    "name": "Rodrigo Aquilino Guimarães",
+    "name": "Rodrigo Aquilino",
     "skill": 3,
     "photo": "/static/images/jogadores/rodrigo-aquilino.jpeg"
   },
   {
     "id": 4,
-    "name": "Mendes,Fábio",
+    "name": "Fábio Mendes",
     "skill": 3,
     "photo": "/static/images/jogadores/fabio-mendes.jpeg"
   },
