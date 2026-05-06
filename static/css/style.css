@@ -534,7 +534,9 @@ h2 {
     color: var(--warning);
     gap: 2px;
 }
-.player-stars svg { width: 14px; height: 14px; fill: var(--warning); }
+.player-stars svg { width: 14px; height: 14px; }
+.star-active { fill: var(--warning); color: var(--warning); }
+.star-inactive { fill: none; color: var(--warning); }
 
 .player-card-actions {
     position: absolute;

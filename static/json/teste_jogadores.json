@@ -64,5 +64,11 @@
     "name": "Cadu Alves",
     "skill": 4,
     "photo": "/static/images/jogadores/cadu.jpeg"
+  },
+  {
+    "id": 12,
+    "name": "Marcio Sá",
+    "skill": 3,
+    "photo": "/static/images/jogadores/marcio-sa-jpeg"
   }
 ]

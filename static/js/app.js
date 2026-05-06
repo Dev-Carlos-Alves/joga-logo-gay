@@ -229,11 +229,12 @@ const app = {
                 card.onclick = null;
             }
             
-            let starsHtml = '';
+            let starsHtml = '<div class="player-stars">';
             for(let i=0; i<5; i++) {
-                if (i < player.skill) starsHtml += '<i data-lucide="star" style="fill: var(--warning)"></i>';
-                else starsHtml += '<i data-lucide="star"></i>';
+                if (i < player.skill) starsHtml += '<i data-lucide="star" class="star-active"></i>';
+                else starsHtml += '<i data-lucide="star" class="star-inactive"></i>';
             }
+            starsHtml += '</div>';
 
             card.innerHTML = `
                 ${!player.isFixed ? `<input type="checkbox" class="player-card-checkbox" ${this.state.playersToDelete.includes(player.id) ? 'checked' : ''} onclick="event.stopPropagation(); app.togglePlayerDelete(${player.id})">` : ''}
@@ -248,7 +249,7 @@ const app = {
                     ${player.name}
                     ${player.isFixed ? '<i data-lucide="lock" style="width: 12px; height: 12px; color: var(--accent); margin-left: 4px;" title="Jogador Fixo"></i>' : ''}
                 </div>
-                <div class="player-stars">${starsHtml}</div>
+                ${starsHtml}
             `;
             grid.appendChild(card);
         });
@@ -353,7 +354,7 @@ const app = {
         );
 
         filteredPlayers.forEach(player => {
-            const isSelected = this.state.selectedPlayers.some(p => p.id === player.id);
+            const isSelected = this.state.selectedPlayers.includes(player.id);
             const item = document.createElement('div');
             item.className = `player-select-item ${isSelected ? 'selected' : ''}`;
             item.onclick = () => this.togglePlayerSelection(player);
@@ -363,7 +364,8 @@ const app = {
                 <div class="player-select-info">
                     <div class="player-select-name">${player.name}</div>
                     <div class="player-stars" style="justify-content: flex-start; gap: 2px;">
-                        ${'<i data-lucide="star" style="width:12px; fill:var(--warning)"></i>'.repeat(player.skill)}
+                        ${'<i data-lucide="star" class="star-active" style="width:12px; height:12px;"></i>'.repeat(player.skill)}
+                        ${'<i data-lucide="star" class="star-inactive" style="width:12px; height:12px;"></i>'.repeat(5 - player.skill)}
                     </div>
                 </div>
                 ${isSelected ? '<i data-lucide="check-circle" style="color: var(--accent)"></i>' : '<i data-lucide="circle"></i>'}
