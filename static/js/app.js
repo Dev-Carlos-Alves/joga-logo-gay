@@ -393,6 +393,7 @@ const app = {
         }
         
         this.renderPlayerSelection();
+        this.updateSetupCounts();
     },
 
     togglePlayerSelection(player) {
