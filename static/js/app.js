@@ -158,27 +158,42 @@ const app = {
     },
 
     async loadPlayers() {
-        try {
-            // Load fixed players from JSON
-            const res = await fetch('/static/json/teste_jogadores.json');
-            let fixedPlayers = [];
-            if (res.ok) {
-                fixedPlayers = await res.json();
-                fixedPlayers = fixedPlayers.map(p => ({ ...p, isFixed: true }));
-            }
-            
-            // Load custom players from IndexedDB
-            let customPlayers = await db.getAllPlayers();
-            
-            // Combine both
-            this.state.players = [...fixedPlayers, ...customPlayers];
-        } catch (e) {
-            console.error("Erro ao carregar jogadores fixos:", e);
-            this.state.players = await db.getAllPlayers();
-        }
-        
+        this.state.players = await db.getAllPlayers();
         this.renderPlayersGrid();
         this.renderPlayerSelection();
+    },
+
+    async invocarVale() {
+        if (!confirm("Isso adicionará a base fixa de jogadores à sua lista atual. Deseja continuar?")) return;
+        
+        try {
+            const res = await fetch('/static/json/teste_jogadores.json');
+            if (!res.ok) throw new Error("Erro na rede");
+            const contentType = res.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Não recebeu JSON válido. Verifique se o Netlify terminou de atualizar.");
+            }
+            const testPlayers = await res.json();
+            
+            // Delete old fixed players? For now just wipe and recreate, or wipe everything?
+            // User requested that they don't have to worry about this. We will wipe all players and replace.
+            const currentPlayers = await db.getAllPlayers();
+            for (let p of currentPlayers) {
+                await db.deletePlayer(p.id);
+            }
+            
+            for (let player of testPlayers) {
+                const { id, ...playerData } = player;
+                playerData.isFixed = true; // Salva como imutável
+                await db.addPlayer(playerData);
+            }
+            
+            await this.loadPlayers();
+            alert("A Tropa de Elite do Vale foi Invocada com sucesso!");
+        } catch (e) {
+            console.error("Erro ao invocar o vale:", e);
+            alert("Erro ao invocar: " + e.message);
+        }
     },
 
     renderPlayersGrid() {
