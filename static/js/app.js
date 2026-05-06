@@ -15,9 +15,13 @@ const app = {
     },
 
     async init() {
-        this.bindEvents();
-        await this.loadPlayers();
-        this.updateSetupCounts();
+        try {
+            this.bindEvents();
+            await this.loadPlayers();
+            this.updateSetupCounts();
+        } catch (e) {
+            console.error("Erro na inicialização do app:", e);
+        }
     },
 
     navigate(viewId) {
@@ -158,9 +162,14 @@ const app = {
     },
 
     async loadPlayers() {
-        this.state.players = await db.getAllPlayers();
-        this.renderPlayersGrid();
-        this.renderPlayerSelection();
+        try {
+            this.state.players = await db.getAllPlayers();
+            this.renderPlayersGrid();
+            this.renderPlayerSelection();
+        } catch (e) {
+            console.error("Erro no loadPlayers:", e);
+            alert("Erro ao carregar jogadores: " + (e.message || e));
+        }
     },
 
     async invocarVale() {
@@ -716,9 +725,14 @@ const app = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await window.db.init();
+    } catch (e) {
+        console.error("Erro no DB:", e);
+        alert("Erro ao abrir banco de dados: " + (e.message || e));
+    }
     app.init();
-    
     // Register Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js')
