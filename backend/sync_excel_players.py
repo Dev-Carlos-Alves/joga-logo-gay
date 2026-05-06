@@ -13,7 +13,7 @@ def sync_players():
         
         for index, row in df.iterrows():
             nome = str(row['Qual seu nome de Jogador no Vale?']).strip()
-            if pd.isna(nome) or nome == 'nan':
+            if pd.isna(row['Qual seu nome de Jogador no Vale?']) or nome == 'nan' or nome == 'NaT':
                 continue
                 
             skill_str = str(row['Qual seu nivel de Habilidade no Vôlei?'])
