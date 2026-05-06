@@ -100,5 +100,11 @@
     "name": "Edu",
     "skill": 3,
     "photo": "/static/images/jogadores/edu.jpeg"
+  },
+  {
+    "id": 18,
+    "name": "Andrew",
+    "skill": 4,
+    "photo": "/static/images/jogadores/andrew.jpeg"
   }
 ]
