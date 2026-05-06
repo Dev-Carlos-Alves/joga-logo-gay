@@ -720,10 +720,117 @@ const app = {
                 if (match.id === 'match-semi-1') finalMatch.team1 = match.winner;
                 if (match.id === 'match-semi-2') finalMatch.team2 = match.winner;
             }
+
+            if (match.phase === 'Final' && match.played) {
+                this.showPodium();
+            }
         }
 
         this.closeModal('match-modal');
         this.renderChampionship();
+    },
+
+    showPodium() {
+        const finalMatch = this.state.knockoutMatches.find(m => m.phase === 'Final');
+        if (!finalMatch || !finalMatch.played || !finalMatch.winner) return;
+
+        const firstPlace = finalMatch.winner;
+        const secondPlace = (firstPlace.id === finalMatch.team1.id) ? finalMatch.team2 : finalMatch.team1;
+
+        // 3rd place: Semifinal losers
+        const semi1 = this.state.knockoutMatches.find(m => m.id === 'match-semi-1');
+        const semi2 = this.state.knockoutMatches.find(m => m.id === 'match-semi-2');
+        const candidates = [];
+        
+        if (semi1 && semi1.played) {
+            candidates.push(semi1.winner.id === semi1.team1.id ? semi1.team2 : semi1.team1);
+        }
+        if (semi2 && semi2.played) {
+            candidates.push(semi2.winner.id === semi2.team1.id ? semi2.team2 : semi2.team1);
+        }
+
+        // Sort candidates by group stage ranking to decide 3rd place
+        if (candidates.length > 1) {
+            candidates.sort((a, b) => {
+                const rowA = this.state.leaderboard.find(r => r.team.id === a.id);
+                const rowB = this.state.leaderboard.find(r => r.team.id === b.id);
+                if (rowB.wins !== rowA.wins) return rowB.wins - rowA.wins;
+                return rowB.pointDifference - rowA.pointDifference;
+            });
+        }
+
+        const thirdPlace = candidates[0];
+
+        const container = document.getElementById('podium-content');
+        const firstDisplay = this.getTeamDisplay(firstPlace);
+        
+        let firstPlayersHtml = firstPlace.players.map(p => `
+            <div class="podium-player">
+                <img src="${p.photo}" onerror="this.src='/static/images/vale.jpg'">
+                <span>${p.name}</span>
+            </div>
+        `).join('');
+
+        container.innerHTML = `
+            <div class="first-place-box">
+                <div class="team-champion-header">
+                    <img src="${firstDisplay.photo}" class="champion-team-photo">
+                    <h3>${firstDisplay.name}</h3>
+                </div>
+                <div class="champion-players-grid">
+                    ${firstPlayersHtml}
+                </div>
+            </div>
+
+            <div class="runners-up">
+                <div class="runner-item" onclick="app.showTeamDetails(${secondPlace.id})">
+                    <div class="runner-rank rank-2">2º</div>
+                    <div class="runner-info">
+                        <img src="${this.getTeamDisplay(secondPlace).photo}">
+                        <span>${this.getTeamDisplay(secondPlace).name}</span>
+                    </div>
+                    <i data-lucide="chevron-right"></i>
+                </div>
+                ${thirdPlace ? `
+                <div class="runner-item" onclick="app.showTeamDetails(${thirdPlace.id})">
+                    <div class="runner-rank rank-3">3º</div>
+                    <div class="runner-info">
+                        <img src="${this.getTeamDisplay(thirdPlace).photo}">
+                        <span>${this.getTeamDisplay(thirdPlace).name}</span>
+                    </div>
+                    <i data-lucide="chevron-right"></i>
+                </div>
+                ` : ''}
+            </div>
+        `;
+
+        lucide.createIcons();
+        this.openModal('podium-modal');
+    },
+
+    showTeamDetails(teamId) {
+        const team = this.state.teams.find(t => t.id === teamId);
+        if (!team) return;
+
+        const nameEl = document.getElementById('team-info-name');
+        nameEl.innerText = this.getTeamDisplay(team).name;
+
+        const playersEl = document.getElementById('team-info-players');
+        playersEl.innerHTML = team.players.map(p => `
+            <div class="team-info-player-item">
+                <img src="${p.photo}" onerror="this.src='/static/images/vale.jpg'">
+                <div class="player-details">
+                    <div class="p-name">${p.name}</div>
+                    <div class="player-stars">
+                        ${'<i data-lucide="star" class="star-active" style="width:12px; height:12px;"></i>'.repeat(p.skill)}
+                        ${'<i data-lucide="star" class="star-inactive" style="width:12px; height:12px;"></i>'.repeat(5 - p.skill)}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        lucide.createIcons();
+        this.openModal('team-info-modal');
     }
 };
 

@@ -58,14 +58,14 @@ const Sorteio = {
      * Gera os jogos da Fase Classificatória (Todos contra Todos, 2 turnos)
      */
     gerarFaseClassificatoria: function(teams) {
-        let matches = [];
+        let pool = [];
         let matchId = 1;
 
-        // Turno e Returno (2 rounds)
+        // Gerar todas as partidas possíveis (Turno e Returno)
         for (let round = 1; round <= 2; round++) {
             for (let i = 0; i < teams.length; i++) {
                 for (let j = i + 1; j < teams.length; j++) {
-                    matches.push({
+                    pool.push({
                         id: `match-group-${Date.now()}-${matchId++}`,
                         round: round,
                         team1: teams[i],
@@ -77,9 +77,73 @@ const Sorteio = {
                 }
             }
         }
-        
-        // Embaralha as partidas para não jogar sempre os mesmos times em sequência
-        return matches.sort(() => Math.random() - 0.5);
+
+        let orderedMatches = [];
+        let consecutive = {};
+        let resting = {};
+        teams.forEach(t => {
+            consecutive[t.id] = 0;
+            resting[t.id] = 0;
+        });
+
+        while (pool.length > 0) {
+            let bestMatchIndex = -1;
+            let minPenalty = Infinity;
+
+            for (let k = 0; k < pool.length; k++) {
+                let m = pool[k];
+                let penalty = 0;
+
+                // Restrição: Um mesmo time não pode jogar mais que DUAS partidas seguidas
+                if (consecutive[m.team1.id] >= 2 || consecutive[m.team2.id] >= 2) {
+                    penalty += 1000;
+                }
+
+                // Restrição: Um mesmo time não pode ficar MAIS que 2 partidas sem jogar
+                // Se algum time JÁ descansou 2 partidas e NÃO está nesta partida, ele chegaria a 3
+                teams.forEach(t => {
+                    if (t.id !== m.team1.id && t.id !== m.team2.id) {
+                        if (resting[t.id] >= 2) {
+                            penalty += 500; 
+                        }
+                    }
+                });
+
+                // Bônus para quem está descansando há mais tempo (evita chegar no limite)
+                penalty -= (resting[m.team1.id] + resting[m.team2.id]) * 20;
+                
+                // Penalidade se o time acabou de jogar (prefere rotatividade se possível)
+                if (consecutive[m.team1.id] > 0) penalty += 50;
+                if (consecutive[m.team2.id] > 0) penalty += 50;
+
+                // Pequeno fator aleatório para variar a ordem entre execuções
+                penalty += Math.random() * 10;
+
+                if (penalty < minPenalty) {
+                    minPenalty = penalty;
+                    bestMatchIndex = k;
+                }
+            }
+
+            // Se por algum motivo extremo não achou (ex: poucos times), pega o primeiro
+            if (bestMatchIndex === -1) bestMatchIndex = 0;
+
+            let match = pool.splice(bestMatchIndex, 1)[0];
+            orderedMatches.push(match);
+
+            // Atualizar contadores
+            teams.forEach(t => {
+                if (t.id === match.team1.id || t.id === match.team2.id) {
+                    consecutive[t.id]++;
+                    resting[t.id] = 0;
+                } else {
+                    consecutive[t.id] = 0;
+                    resting[t.id]++;
+                }
+            });
+        }
+
+        return orderedMatches;
     },
 
     /**

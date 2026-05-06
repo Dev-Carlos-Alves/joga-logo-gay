@@ -275,6 +275,34 @@
         </div>
     </div>
 
+    <!-- Podium Modal -->
+    <div id="podium-modal" class="modal-backdrop">
+        <div class="modal glass-panel" style="max-width: 500px;">
+            <div class="modal-header" style="justify-content: center; position: relative;">
+                <h2 style="margin: 0; color: var(--warning); display: flex; align-items: center; gap: 10px;">
+                    <i data-lucide="trophy"></i> CAMPEÕES! <i data-lucide="trophy"></i>
+                </h2>
+                <button class="icon-btn close-modal" onclick="app.closeModal('podium-modal')" style="position: absolute; right: 0;"><i data-lucide="x"></i></button>
+            </div>
+            <div id="podium-content" class="podium-container">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Info Modal -->
+    <div id="team-info-modal" class="modal-backdrop">
+        <div class="modal glass-panel" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 id="team-info-name">Informações do Time</h3>
+                <button class="icon-btn close-modal" onclick="app.closeModal('team-info-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <div id="team-info-players" class="team-info-grid">
+                <!-- Players injected via JS -->
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="/static/js/db.js"></script>
     <script src="/static/js/sorteio.js"></script>
