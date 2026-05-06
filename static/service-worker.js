@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jogalogo-gay-v2';
+const CACHE_NAME = 'jogalogo-gay-v3';
 const ASSETS_TO_CACHE = [
     '/',
     '/static/css/style.css',
@@ -12,6 +12,7 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', (event) => {
+    self.skipWaiting(); // Força a atualização imediata do service worker
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS_TO_CACHE);
@@ -47,6 +48,8 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
             );
+        }).then(() => {
+            return self.clients.claim(); // Assume o controle das páginas abertas imediatamente
         })
     );
 });
