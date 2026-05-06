@@ -69,6 +69,16 @@
                 <button class="btn btn-secondary" onclick="app.toggleBatchDelete()"><i data-lucide="check-square"></i> Múltiplos</button>
                 <button id="btn-delete-selected" class="btn btn-danger" style="display: none;" onclick="app.deleteSelectedPlayers()"><i data-lucide="trash-2"></i> Apagar</button>
             </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <div style="flex: 1; position: relative;">
+                    <i data-lucide="search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; color: var(--text-muted);"></i>
+                    <input type="text" id="search-players-grid" class="form-control" placeholder="Buscar atleta..." style="padding-left: 2rem;" onkeyup="app.renderPlayersGrid()">
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="app.cycleSort()" title="Alterar Ordenação" id="sort-btn-grid">
+                    <i data-lucide="arrow-down-az"></i>
+                </button>
+            </div>
             
             <div class="players-grid" id="players-list">
                 <!-- Players will be injected here by JS -->
@@ -115,6 +125,9 @@
                                 <i data-lucide="search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; color: var(--text-muted);"></i>
                                 <input type="text" id="search-players" class="form-control" placeholder="Buscar jogador..." style="padding-left: 2rem;" onkeyup="app.renderPlayerSelection()">
                             </div>
+                            <button type="button" class="btn btn-secondary" onclick="app.cycleSort()" title="Alterar Ordenação" id="sort-btn-setup">
+                                <i data-lucide="arrow-down-az"></i>
+                            </button>
                             <button type="button" class="btn btn-secondary" onclick="app.selectAllPlayers()" title="Selecionar Todos">
                                 <i data-lucide="check-square"></i> Todos
                             </button>

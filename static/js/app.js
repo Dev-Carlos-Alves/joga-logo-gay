@@ -11,7 +11,9 @@ const app = {
         currentSkill: 3,
         currentMatchId: null,
         batchDeleteMode: false,
-        playersToDelete: []
+        playersToDelete: [],
+        sortCriteria: 'name',
+        sortOrder: 'asc'
     },
 
     async init() {
@@ -205,6 +207,63 @@ const app = {
         }
     },
 
+    cycleSort() {
+        const states = [
+            { criteria: 'name', order: 'asc', icon: 'arrow-down-az' },
+            { criteria: 'name', order: 'desc', icon: 'arrow-up-az' },
+            { criteria: 'skill', order: 'desc', icon: 'star' },
+            { criteria: 'skill', order: 'asc', icon: 'star-half' }
+        ];
+
+        let currentIndex = states.findIndex(s => s.criteria === this.state.sortCriteria && s.order === this.state.sortOrder);
+        let nextIndex = (currentIndex + 1) % states.length;
+        let nextState = states[nextIndex];
+
+        this.state.sortCriteria = nextState.criteria;
+        this.state.sortOrder = nextState.order;
+
+        this.updateSortIcons(nextState.icon);
+        this.renderPlayersGrid();
+        this.renderPlayerSelection();
+    },
+
+    updateSortIcons(iconName) {
+        const btns = ['sort-btn-grid', 'sort-btn-setup'];
+        btns.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.innerHTML = `<i data-lucide="${iconName}"></i>`;
+            }
+        });
+        lucide.createIcons();
+    },
+
+    getProcessedPlayers(searchId) {
+        const searchTerm = (document.getElementById(searchId)?.value || '').toLowerCase();
+        let players = this.state.players.filter(p => p.name.toLowerCase().includes(searchTerm));
+
+        players.sort((a, b) => {
+            let valA, valB;
+            if (this.state.sortCriteria === 'name') {
+                valA = a.name.toLowerCase();
+                valB = b.name.toLowerCase();
+                if (valA < valB) return this.state.sortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return this.state.sortOrder === 'asc' ? 1 : -1;
+            } else {
+                valA = a.skill;
+                valB = b.skill;
+                if (valA !== valB) {
+                    return this.state.sortOrder === 'asc' ? valA - valB : valB - valA;
+                }
+                // Fallback to name if skills are equal
+                return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+            }
+            return 0;
+        });
+
+        return players;
+    },
+
     renderPlayersGrid() {
         const grid = document.getElementById('players-list');
         if (this.state.players.length === 0) {
@@ -219,7 +278,9 @@ const app = {
         }
 
         grid.innerHTML = '';
-        this.state.players.forEach(player => {
+        const players = this.getProcessedPlayers('search-players-grid');
+        
+        players.forEach(player => {
             const card = document.createElement('div');
             card.className = `player-card ${this.state.batchDeleteMode ? 'batch-mode' : ''} ${this.state.playersToDelete.includes(player.id) ? 'selected-for-deletion' : ''}`;
             
@@ -342,16 +403,11 @@ const app = {
             btnSortear.disabled = true;
         }
     },
-
     renderPlayerSelection() {
         const list = document.getElementById('player-selection-list');
         list.innerHTML = '';
         
-        const searchTerm = (document.getElementById('search-players')?.value || '').toLowerCase();
-        
-        const filteredPlayers = this.state.players.filter(p => 
-            p.name.toLowerCase().includes(searchTerm)
-        );
+        const filteredPlayers = this.getProcessedPlayers('search-players');
 
         filteredPlayers.forEach(player => {
             const isSelected = this.state.selectedPlayers.includes(player.id);

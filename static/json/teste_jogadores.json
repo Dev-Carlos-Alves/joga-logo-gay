@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Zé",
-    "skill": 2,
+    "skill": 4,
     "photo": "/static/images/jogadores/ze.jpeg"
   },
   {
@@ -20,7 +20,7 @@
   {
     "id": 4,
     "name": "Fábio Mendes",
-    "skill": 3,
+    "skill": 2,
     "photo": "/static/images/jogadores/fabio-mendes.jpeg"
   },
   {
@@ -50,7 +50,7 @@
   {
     "id": 9,
     "name": "Wes",
-    "skill": 1,
+    "skill": 2,
     "photo": "/static/images/jogadores/wes.jpeg"
   },
   {
@@ -69,7 +69,7 @@
     "id": 12,
     "name": "Marcio Sá",
     "skill": 3,
-    "photo": "/static/images/jogadores/Marcio-sa.jpeg"
+    "photo": "/static/images/jogadores/marcio-sa-jpeg"
   },
   {
     "id": 13,
@@ -88,5 +88,17 @@
     "name": "Giovana",
     "skill": 2,
     "photo": "/static/images/jogadores/giovana.jpeg"
+  },
+  {
+    "id": 16,
+    "name": "Ícaro",
+    "skill": 5,
+    "photo": "/static/images/jogadores/icaro.jpeg"
+  },
+  {
+    "id": 17,
+    "name": "Edu",
+    "skill": 3,
+    "photo": "/static/images/jogadores/edu.jpeg"
   }
 ]
