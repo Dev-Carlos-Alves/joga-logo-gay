@@ -1,0 +1,22 @@
+{
+  "name": "Joga Logo, GAY!!!!",
+  "short_name": "JogaLogoGAY",
+  "description": "Aplicativo para sorteio balanceado de times de vôlei e gerenciamento de chaveamentos.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0f0c29",
+  "theme_color": "#dc3c78",
+  "icons": [
+    {
+      "src": "images/vale.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "images/vale.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#FF0080">
+    <title>Joga Logo, GAY!!!! - Sorteio de Vôlei</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/static/json/manifest.json">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="background-container"></div>
+    
+    <main class="app-container">
+        <!-- Header -->
+        <header class="glass-panel main-header">
+            <div class="logo">
+                <img src="/static/images/vale.jpg" alt="Logo" class="logo-image">
+                <h1>Joga Logo, <span>GAY!!!!</span></h1>
+            </div>
+            <nav class="main-nav">
+                <button class="icon-btn" onclick="app.navigate('home')" title="Início"><i data-lucide="home"></i></button>
+                <button class="icon-btn" onclick="app.navigate('players')" title="Jogadores"><i data-lucide="users"></i></button>
+                <button class="icon-btn" onclick="app.navigate('setup')" title="Novo Campeonato"><i data-lucide="trophy"></i></button>
+            </nav>
+        </header>
+
+        <!-- VIEWS -->
+        
+        <!-- View: Home -->
+        <section id="view-home" class="view active">
+            <div class="glass-panel hero-panel">
+                <h2>O sorteio que a nossa quadra merece! 🏐✨</h2>
+                <p>Chega de briga pra dividir os times. Deixe o algoritmo trabalhar por você e garantir o equilíbrio na quadra.</p>
+                <div class="action-buttons">
+                    <button class="btn btn-primary btn-large" onclick="app.navigate('setup')">
+                        <i data-lucide="play"></i> Iniciar Torneio
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="app.navigate('players')">
+                        <i data-lucide="users"></i> Gerenciar Jogadores
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Players Management -->
+        <section id="view-players" class="view">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin: 0;">Nossos Atletas <i data-lucide="users"></i></h2>
+                <button class="btn btn-primary" onclick="app.openModal('add-player-modal')">
+                    <i data-lucide="plus"></i> Novo
+                </button>
+            </div>
+            
+            <div id="batch-actions" style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="app.toggleBatchDelete()"><i data-lucide="check-square"></i> Múltiplos</button>
+                <button id="btn-delete-selected" class="btn btn-danger" style="display: none;" onclick="app.deleteSelectedPlayers()"><i data-lucide="trash-2"></i> Apagar</button>
+                <button class="btn btn-secondary" onclick="app.loadTestData()"><i data-lucide="download"></i> Popular Teste</button>
+            </div>
+            
+            <div class="players-grid" id="players-list">
+                <!-- Players will be injected here by JS -->
+                <div class="empty-state">
+                    <i data-lucide="users"></i>
+                    <p>Nenhum jogador cadastrado ainda.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Setup Championship -->
+        <section id="view-setup" class="view">
+            <div class="glass-panel">
+                <h2>Configurar Torneio 🏆</h2>
+                <form id="setup-form" class="setup-form">
+                    <div class="form-group">
+                        <label for="num-teams">Quantidade de Times</label>
+                        <div class="number-input">
+                            <button type="button" onclick="app.decrement('num-teams')"><i data-lucide="minus"></i></button>
+                            <input type="number" id="num-teams" value="4" min="2" max="16" readonly>
+                            <button type="button" onclick="app.increment('num-teams')"><i data-lucide="plus"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="players-per-team">Jogadores por Time</label>
+                        <div class="number-input">
+                            <button type="button" onclick="app.decrement('players-per-team')"><i data-lucide="minus"></i></button>
+                            <input type="number" id="players-per-team" value="6" min="2" max="10" readonly>
+                            <button type="button" onclick="app.increment('players-per-team')"><i data-lucide="plus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label style="margin-bottom: 0;">Selecione os Jogadores (<span id="selected-count">0</span>/<span id="required-count">24</span>)</label>
+                            <button type="button" class="btn btn-secondary" onclick="app.openModal('add-player-modal')" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; gap: 4px;">
+                                <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Novo Jogador
+                            </button>
+                        </div>
+                        <div class="player-selection-list" id="player-selection-list">
+                            <!-- Players to select will be injected here -->
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full" id="btn-sortear" disabled>
+                        <i data-lucide="shuffle"></i> Sortear Times
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- View: Sorted Teams -->
+        <section id="view-teams" class="view">
+            <div class="glass-panel">
+                <div class="view-header" style="flex-wrap: wrap; gap: 0.5rem;">
+                    <h2 style="margin: 0;">Equipes Sorteadas 🎲</h2>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-secondary" onclick="app.navigate('setup')" title="Voltar para a seleção de jogadores">
+                            <i data-lucide="arrow-left"></i> Voltar
+                        </button>
+                        <button class="btn btn-primary" onclick="app.startChampionship()">
+                            <i data-lucide="swords"></i> Chaveamento
+                        </button>
+                    </div>
+                </div>
+                <div class="teams-grid" id="teams-list">
+                    <!-- Teams injected here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Bracket / Matches -->
+        <section id="view-bracket" class="view">
+            <div class="glass-panel">
+                <div class="view-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="margin: 0;">Chaveamento 🔥</h2>
+                    <button class="btn btn-secondary" onclick="app.navigate('teams')" title="Voltar para a edição de times">
+                        <i data-lucide="arrow-left"></i> Voltar
+                    </button>
+                </div>
+                <div class="bracket-container" id="bracket-container">
+                    <!-- Bracket injected here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modals -->
+    <div id="add-player-modal" class="modal-backdrop">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h3 id="player-modal-title">Novo Jogador</h3>
+                <button class="icon-btn close-modal" onclick="app.closeModal('add-player-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <form id="add-player-form">
+                <input type="hidden" id="player-id" value="">
+                <div class="form-group">
+                    <label>Foto do Jogador</label>
+                    <div class="photo-preview-container" id="photo-preview-container" style="display: none; justify-content: center; margin-bottom: 1rem;">
+                        <div class="photo-placeholder" id="photo-preview-label" style="border-color: var(--primary);"></div>
+                    </div>
+                    <div class="photo-upload-actions" style="display: flex; gap: 0.5rem; justify-content: center;">
+                        <input type="file" id="player-photo-camera" accept="image/*" capture="environment" class="hidden">
+                        <label for="player-photo-camera" class="btn btn-secondary" style="flex: 1;">
+                            <i data-lucide="camera"></i> Câmera
+                        </label>
+
+                        <input type="file" id="player-photo-gallery" accept="image/*" class="hidden">
+                        <label for="player-photo-gallery" class="btn btn-secondary" style="flex: 1;">
+                            <i data-lucide="image"></i> Galeria
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="player-name">Nome</label>
+                    <input type="text" id="player-name" required placeholder="Nome ou Apelido" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Nível de Habilidade (0 a 5)</label>
+                    <div class="star-rating" id="star-rating-input">
+                        <span data-value="1" class="star-btn"><i data-lucide="star"></i></span>
+                        <span data-value="2" class="star-btn"><i data-lucide="star"></i></span>
+                        <span data-value="3" class="star-btn"><i data-lucide="star"></i></span>
+                        <span data-value="4" class="star-btn"><i data-lucide="star"></i></span>
+                        <span data-value="5" class="star-btn"><i data-lucide="star"></i></span>
+                    </div>
+                    <input type="hidden" id="player-skill" value="3">
+                    <div class="skill-label" id="skill-label">Intermediário</div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Salvar Jogador</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Match Result Modal -->
+    <div id="match-modal" class="modal-backdrop">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h3>Resultado da Partida</h3>
+                <button class="icon-btn close-modal" onclick="app.closeModal('match-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <form id="match-form">
+                <div class="match-score-inputs">
+                    <div class="team-score">
+                        <h4 id="match-team1-name">Time 1</h4>
+                        <input type="number" id="match-team1-score" value="0" min="0" class="score-input">
+                    </div>
+                    <div class="score-divider">X</div>
+                    <div class="team-score">
+                        <h4 id="match-team2-name">Time 2</h4>
+                        <input type="number" id="match-team2-score" value="0" min="0" class="score-input">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Confirmar Resultado</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Team Modal -->
+    <div id="edit-team-modal" class="modal-backdrop">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h3>Editar Time</h3>
+                <button class="icon-btn close-modal" onclick="app.closeModal('edit-team-modal')"><i data-lucide="x"></i></button>
+            </div>
+            <form id="edit-team-form">
+                <input type="hidden" id="edit-team-id" value="">
+                <div class="form-group">
+                    <label>Foto da Equipe</label>
+                    <div class="photo-preview-container" id="team-photo-preview-container" style="display: none; justify-content: center; margin-bottom: 1rem;">
+                        <div class="photo-placeholder" id="team-photo-preview-label" style="border-color: var(--primary);"></div>
+                    </div>
+                    <div class="photo-upload-actions" style="display: flex; gap: 0.5rem; justify-content: center;">
+                        <input type="file" id="team-photo-camera" accept="image/*" capture="environment" class="hidden">
+                        <label for="team-photo-camera" class="btn btn-secondary" style="flex: 1;">
+                            <i data-lucide="camera"></i> Câmera
+                        </label>
+
+                        <input type="file" id="team-photo-gallery" accept="image/*" class="hidden">
+                        <label for="team-photo-gallery" class="btn btn-secondary" style="flex: 1;">
+                            <i data-lucide="image"></i> Galeria
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nome do Time</label>
+                    <input type="text" id="team-custom-name" placeholder="Ex: Poderosas do Vôlei" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Salvar Equipe</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/db.js"></script>
+    <script src="/static/js/sorteio.js"></script>
+    <script src="/static/js/app.js"></script>
+    
+    <!-- Initialize Lucide Icons -->
+    <script>
+      lucide.createIcons();
+    </script>
+</body>
+</html>

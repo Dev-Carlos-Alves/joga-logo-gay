@@ -1,0 +1,117 @@
+[
+    {
+        "name": "Lucas",
+        "skill": 5,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Eduardo",
+        "skill": 2,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Vini",
+        "skill": 5,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Pedro",
+        "skill": 5,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Gui",
+        "skill": 2,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Samuel",
+        "skill": 2,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Beto",
+        "skill": 3,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Rafa",
+        "skill": 1,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Marcos",
+        "skill": 1,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Caio",
+        "skill": 1,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Alex",
+        "skill": 4,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Renan",
+        "skill": 3,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Cadu",
+        "skill": 3,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Felipe",
+        "skill": 5,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Léo",
+        "skill": 1,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "João",
+        "skill": 5,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Bruno",
+        "skill": 2,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Marcelo",
+        "skill": 4,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Igor",
+        "skill": 5,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Thiago",
+        "skill": 4,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Fernando",
+        "skill": 3,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "André",
+        "skill": 2,
+        "photo": "/static/images/vale.jpg"
+    },
+    {
+        "name": "Victor",
+        "skill": 1,
+        "photo": "/static/images/vale.jpg"
+    }
+]
