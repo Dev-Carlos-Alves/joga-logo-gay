@@ -379,8 +379,6 @@ const app = {
         const numTeams = parseInt(document.getElementById('num-teams').value);
         const playersPerTeam = parseInt(document.getElementById('players-per-team').value);
         const required = numTeams * playersPerTeam;
-
-        this.state.selectedPlayers = [];
         
         // Filter players exactly as renderPlayerSelection does to only select visible ones
         const searchTerm = (document.getElementById('search-players')?.value || '').toLowerCase();
@@ -388,8 +386,16 @@ const app = {
             p.name.toLowerCase().includes(searchTerm)
         );
         
-        for (let i = 0; i < Math.min(filteredPlayers.length, required); i++) {
-            this.state.selectedPlayers.push(filteredPlayers[i].id);
+        const targetIds = filteredPlayers.slice(0, required).map(p => p.id);
+        
+        // Se já estão todos selecionados (daqueles que seriam alvo), limpamos.
+        // Caso contrário, selecionamos todos.
+        const areAllSelected = targetIds.length > 0 && targetIds.every(id => this.state.selectedPlayers.includes(id));
+
+        if (areAllSelected) {
+            this.state.selectedPlayers = [];
+        } else {
+            this.state.selectedPlayers = targetIds;
         }
         
         this.renderPlayerSelection();

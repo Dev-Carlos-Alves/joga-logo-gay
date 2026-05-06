@@ -69,6 +69,24 @@
     "id": 12,
     "name": "Marcio Sá",
     "skill": 3,
-    "photo": "/static/images/jogadores/marcio-sa-jpeg"
+    "photo": "/static/images/jogadores/Marcio-sa.jpeg"
+  },
+  {
+    "id": 13,
+    "name": "Lacerda",
+    "skill": 4,
+    "photo": "/static/images/jogadores/lacerda.jpeg"
+  },
+  {
+    "id": 14,
+    "name": "Carlos",
+    "skill": 4,
+    "photo": "/static/images/jogadores/carlos.jpeg"
+  },
+  {
+    "id": 15,
+    "name": "Giovana",
+    "skill": 2,
+    "photo": "/static/images/jogadores/giovana.jpeg"
   }
 ]
