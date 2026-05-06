@@ -243,8 +243,8 @@ const app = {
                         <button class="delete-player-btn" onclick="app.deletePlayer(${player.id})" title="Excluir"><i data-lucide="trash-2"></i></button>
                     ` : ''}
                 </div>
-                <img src="${player.photo}" class="player-card-photo" alt="${player.name}" onerror="this.src='/static/images/vale.jpg'">
-                <div class="player-card-name">
+                <img src="${player.photo}" class="player-photo" alt="${player.name}" onerror="this.src='/static/images/vale.jpg'">
+                <div class="player-name">
                     ${player.name}
                     ${player.isFixed ? '<i data-lucide="lock" style="width: 12px; height: 12px; color: var(--accent); margin-left: 4px;" title="Jogador Fixo"></i>' : ''}
                 </div>
