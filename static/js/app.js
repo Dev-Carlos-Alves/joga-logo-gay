@@ -158,7 +158,25 @@ const app = {
     },
 
     async loadPlayers() {
-        this.state.players = await db.getAllPlayers();
+        try {
+            // Load fixed players from JSON
+            const res = await fetch('/static/json/teste_jogadores.json');
+            let fixedPlayers = [];
+            if (res.ok) {
+                fixedPlayers = await res.json();
+                fixedPlayers = fixedPlayers.map(p => ({ ...p, isFixed: true }));
+            }
+            
+            // Load custom players from IndexedDB
+            let customPlayers = await db.getAllPlayers();
+            
+            // Combine both
+            this.state.players = [...fixedPlayers, ...customPlayers];
+        } catch (e) {
+            console.error("Erro ao carregar jogadores fixos:", e);
+            this.state.players = await db.getAllPlayers();
+        }
+        
         this.renderPlayersGrid();
         this.renderPlayerSelection();
     },
@@ -194,13 +212,18 @@ const app = {
             }
 
             card.innerHTML = `
-                <input type="checkbox" class="player-card-checkbox" ${this.state.playersToDelete.includes(player.id) ? 'checked' : ''} onclick="event.stopPropagation(); app.togglePlayerDelete(${player.id})">
+                ${!player.isFixed ? `<input type="checkbox" class="player-card-checkbox" ${this.state.playersToDelete.includes(player.id) ? 'checked' : ''} onclick="event.stopPropagation(); app.togglePlayerDelete(${player.id})">` : ''}
                 <div class="player-card-actions">
-                    <button class="edit-player-btn" onclick="app.editPlayer(${player.id})" title="Editar"><i data-lucide="edit-2"></i></button>
-                    <button class="delete-player-btn" onclick="app.deletePlayer(${player.id})" title="Excluir"><i data-lucide="trash-2"></i></button>
+                    ${!player.isFixed ? `
+                        <button class="edit-player-btn" onclick="app.editPlayer(${player.id})" title="Editar"><i data-lucide="edit-2"></i></button>
+                        <button class="delete-player-btn" onclick="app.deletePlayer(${player.id})" title="Excluir"><i data-lucide="trash-2"></i></button>
+                    ` : ''}
                 </div>
-                <img src="${player.photo}" class="player-photo" alt="${player.name}" onerror="this.src='/static/images/vale.jpg'">
-                <div class="player-name">${player.name}</div>
+                <img src="${player.photo}" class="player-card-photo" alt="${player.name}" onerror="this.src='/static/images/vale.jpg'">
+                <div class="player-card-name">
+                    ${player.name}
+                    ${player.isFixed ? '<i data-lucide="lock" style="width: 12px; height: 12px; color: var(--accent); margin-left: 4px;" title="Jogador Fixo"></i>' : ''}
+                </div>
                 <div class="player-stars">${starsHtml}</div>
             `;
             grid.appendChild(card);
@@ -259,36 +282,7 @@ const app = {
         }
     },
 
-    async loadTestData() {
-        if (!confirm("Isso apagará todos os jogadores atuais e carregará a base fixa. Deseja continuar?")) return;
 
-        try {
-            // Limpa jogadores atuais
-            const currentPlayers = await db.getAllPlayers();
-            for (let p of currentPlayers) {
-                await db.deletePlayer(p.id);
-            }
-            
-            // Carrega o JSON
-            const response = await fetch('/static/json/teste_jogadores.json');
-            if (!response.ok) throw new Error("Erro ao baixar json");
-            
-            const testPlayers = await response.json();
-            
-            // Insere no IndexedDB
-            for (let player of testPlayers) {
-                const { id, ...playerData } = player;
-                await db.addPlayer(playerData);
-            }
-            
-            await this.loadPlayers();
-            alert("Jogadores carregados com sucesso!");
-            
-        } catch (error) {
-            console.error('Erro ao carregar dados:', error);
-            alert("Erro ao carregar os dados fixos.");
-        }
-    },
 
     increment(inputId) {
         const input = document.getElementById(inputId);
