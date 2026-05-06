@@ -109,6 +109,17 @@
                                 <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Novo Jogador
                             </button>
                         </div>
+                        
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <div style="flex: 1; position: relative;">
+                                <i data-lucide="search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; color: var(--text-muted);"></i>
+                                <input type="text" id="search-players" class="form-control" placeholder="Buscar jogador..." style="padding-left: 2rem;" onkeyup="app.renderPlayerSelection()">
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="app.selectAllPlayers()" title="Selecionar Todos">
+                                <i data-lucide="check-square"></i> Todos
+                            </button>
+                        </div>
+
                         <div class="player-selection-list" id="player-selection-list">
                             <!-- Players to select will be injected here -->
                         </div>

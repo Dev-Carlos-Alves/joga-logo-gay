@@ -1,117 +1,146 @@
 [
-    {
-        "name": "Lucas",
-        "skill": 5,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Eduardo",
-        "skill": 2,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Vini",
-        "skill": 5,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Pedro",
-        "skill": 5,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Gui",
-        "skill": 2,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Samuel",
-        "skill": 2,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Beto",
-        "skill": 3,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Rafa",
-        "skill": 1,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Marcos",
-        "skill": 1,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Caio",
-        "skill": 1,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Alex",
-        "skill": 4,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Renan",
-        "skill": 3,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Cadu",
-        "skill": 3,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Felipe",
-        "skill": 5,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Léo",
-        "skill": 1,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "João",
-        "skill": 5,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Bruno",
-        "skill": 2,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Marcelo",
-        "skill": 4,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Igor",
-        "skill": 5,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Thiago",
-        "skill": 4,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Fernando",
-        "skill": 3,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "André",
-        "skill": 2,
-        "photo": "/static/images/vale.jpg"
-    },
-    {
-        "name": "Victor",
-        "skill": 1,
-        "photo": "/static/images/vale.jpg"
-    }
+  {
+    "id": 1,
+    "name": "Zé",
+    "skill": 2,
+    "photo": "/static/images/jogadores/ze.jpeg"
+  },
+  {
+    "id": 2,
+    "name": "Lary",
+    "skill": 3,
+    "photo": "/static/images/jogadores/lary.jpeg"
+  },
+  {
+    "id": 3,
+    "name": "Rodrigo Aquilino Guimarães",
+    "skill": 3,
+    "photo": "/static/images/jogadores/rodrigo-aquilino.jpeg"
+  },
+  {
+    "id": 4,
+    "name": "Mendes,Fábio",
+    "skill": 3,
+    "photo": "/static/images/jogadores/fabio-mendes.jpeg"
+  },
+  {
+    "id": 5,
+    "name": "Felipe Lima",
+    "skill": 2,
+    "photo": "/static/images/jogadores/felipe-lima.jpeg"
+  },
+  {
+    "id": 6,
+    "name": "Fabio filho",
+    "skill": 3,
+    "photo": "/static/images/jogadores/fabio-filho.jpeg"
+  },
+  {
+    "id": 7,
+    "name": "Blandon",
+    "skill": 5,
+    "photo": "/static/images/jogadores/blandom.jpeg"
+  },
+  {
+    "id": 8,
+    "name": "João Paulo",
+    "skill": 2,
+    "photo": "/static/images/jogadores/jp-paz.jpeg"
+  },
+  {
+    "id": 9,
+    "name": "Wes",
+    "skill": 1,
+    "photo": "/static/images/jogadores/wes.jpeg"
+  },
+  {
+    "id": 10,
+    "name": "Flavio Oliveira",
+    "skill": 2,
+    "photo": "/static/images/jogadores/flavio-oliveira.jpeg"
+  },
+  {
+    "id": 11,
+    "name": "Cadu Alves",
+    "skill": 4,
+    "photo": "/static/images/jogadores/cadu.jpeg"
+  },
+  {
+    "id": 12,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 13,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 14,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 15,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 16,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 17,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 18,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 19,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 20,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 21,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 22,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 23,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  },
+  {
+    "id": 24,
+    "name": "NaT",
+    "skill": 1,
+    "photo": "/static/images/jogadores/NaT"
+  }
 ]

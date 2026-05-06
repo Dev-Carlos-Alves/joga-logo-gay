@@ -1,70 +1,96 @@
-// Backend REST API client
+const DB_NAME = 'SorteioVoleiDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'players';
+
+let dbInstance;
+
 window.db = {
-    init: async function() {
-        // No initialization required for REST API
-        return Promise.resolve();
+    init: function() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+            request.onerror = (e) => reject("Erro ao abrir banco IndexedDB");
+
+            request.onsuccess = (e) => {
+                dbInstance = e.target.result;
+                resolve(dbInstance);
+            };
+
+            request.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                }
+            };
+        });
     },
 
-    getAllPlayers: async function() {
-        try {
-            const res = await fetch('/api/players');
-            if (!res.ok) throw new Error('Failed to fetch');
-            return await res.json();
-        } catch (e) {
-            console.error('Error fetching players:', e);
-            return [];
-        }
+    getAllPlayers: function() {
+        return new Promise((resolve, reject) => {
+            if (!dbInstance) return reject("DB não iniciado");
+            const transaction = dbInstance.transaction(STORE_NAME, 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject("Erro ao buscar jogadores");
+        });
     },
 
-    addPlayer: async function(player) {
-        try {
-            const res = await fetch('/api/players', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(player)
+    addPlayer: function(player) {
+        return new Promise((resolve, reject) => {
+            if (!dbInstance) return reject("DB não iniciado");
+            const transaction = dbInstance.transaction(STORE_NAME, 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.add(player);
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject("Erro ao adicionar jogador");
+        });
+    },
+
+    updatePlayer: function(player) {
+        return new Promise((resolve, reject) => {
+            if (!dbInstance) return reject("DB não iniciado");
+            const transaction = dbInstance.transaction(STORE_NAME, 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.put(player);
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject("Erro ao atualizar jogador");
+        });
+    },
+
+    deletePlayer: function(id) {
+        return new Promise((resolve, reject) => {
+            if (!dbInstance) return reject("DB não iniciado");
+            const transaction = dbInstance.transaction(STORE_NAME, 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.delete(id);
+
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject("Erro ao deletar jogador");
+        });
+    },
+
+    batchDeletePlayers: function(ids) {
+        return new Promise((resolve, reject) => {
+            if (!dbInstance) return reject("DB não iniciado");
+            const transaction = dbInstance.transaction(STORE_NAME, 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            
+            let count = 0;
+            if (ids.length === 0) resolve();
+            ids.forEach(id => {
+                const request = store.delete(id);
+                request.onsuccess = () => {
+                    count++;
+                    if(count === ids.length) {
+                        resolve();
+                    }
+                };
+                request.onerror = () => reject("Erro ao deletar em lote");
             });
-            if (!res.ok) throw new Error('Failed to add');
-            const data = await res.json();
-            return data.id;
-        } catch (e) {
-            console.error('Error adding player:', e);
-        }
-    },
-
-    updatePlayer: async function(player) {
-        try {
-            const res = await fetch(`/api/players/${player.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(player)
-            });
-            if (!res.ok) throw new Error('Failed to update');
-        } catch (e) {
-            console.error('Error updating player:', e);
-        }
-    },
-
-    deletePlayer: async function(id) {
-        try {
-            const res = await fetch(`/api/players/${id}`, {
-                method: 'DELETE'
-            });
-            if (!res.ok) throw new Error('Failed to delete');
-        } catch (e) {
-            console.error('Error deleting player:', e);
-        }
-    },
-
-    batchDeletePlayers: async function(ids) {
-        try {
-            const res = await fetch('/api/players/batch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ids })
-            });
-            if (!res.ok) throw new Error('Failed to batch delete');
-        } catch (e) {
-            console.error('Error batch deleting players:', e);
-        }
+        });
     }
 };

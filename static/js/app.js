@@ -260,16 +260,33 @@ const app = {
     },
 
     async loadTestData() {
-        if (!confirm("Isso apagará todos os jogadores atuais e carregará 23 jogadores de teste. Deseja continuar?")) return;
+        if (!confirm("Isso apagará todos os jogadores atuais e carregará a base fixa. Deseja continuar?")) return;
 
         try {
-            const res = await fetch('/api/players/populate', { method: 'POST' });
-            if (!res.ok) throw new Error('Erro ao popular dados');
+            // Limpa jogadores atuais
+            const currentPlayers = await db.getAllPlayers();
+            for (let p of currentPlayers) {
+                await db.deletePlayer(p.id);
+            }
+            
+            // Carrega o JSON
+            const response = await fetch('/static/json/teste_jogadores.json');
+            if (!response.ok) throw new Error("Erro ao baixar json");
+            
+            const testPlayers = await response.json();
+            
+            // Insere no IndexedDB
+            for (let player of testPlayers) {
+                const { id, ...playerData } = player;
+                await db.addPlayer(playerData);
+            }
+            
             await this.loadPlayers();
-            alert("Jogadores de teste carregados com sucesso!");
+            alert("Jogadores carregados com sucesso!");
+            
         } catch (error) {
-            console.error('Erro ao carregar dados de teste:', error);
-            alert("Erro ao carregar os dados de teste.");
+            console.error('Erro ao carregar dados:', error);
+            alert("Erro ao carregar os dados fixos.");
         }
     },
 
@@ -311,14 +328,17 @@ const app = {
         const list = document.getElementById('player-selection-list');
         list.innerHTML = '';
         
-        // Remove players from selected that might have been deleted
-        this.state.selectedPlayers = this.state.selectedPlayers.filter(id => this.state.players.find(p => p.id === id));
+        const searchTerm = (document.getElementById('search-players')?.value || '').toLowerCase();
+        
+        const filteredPlayers = this.state.players.filter(p => 
+            p.name.toLowerCase().includes(searchTerm)
+        );
 
-        this.state.players.forEach(player => {
-            const isSelected = this.state.selectedPlayers.includes(player.id);
+        filteredPlayers.forEach(player => {
+            const isSelected = this.state.selectedPlayers.some(p => p.id === player.id);
             const item = document.createElement('div');
             item.className = `player-select-item ${isSelected ? 'selected' : ''}`;
-            item.onclick = () => this.togglePlayerSelection(player.id, item);
+            item.onclick = () => this.togglePlayerSelection(player);
 
             item.innerHTML = `
                 <img src="${player.photo}" class="player-select-photo" onerror="this.src='/static/images/vale.jpg'">
@@ -335,7 +355,28 @@ const app = {
         lucide.createIcons();
     },
 
-    togglePlayerSelection(playerId, element) {
+    selectAllPlayers() {
+        const numTeams = parseInt(document.getElementById('num-teams').value);
+        const playersPerTeam = parseInt(document.getElementById('players-per-team').value);
+        const required = numTeams * playersPerTeam;
+
+        this.state.selectedPlayers = [];
+        
+        // Filter players exactly as renderPlayerSelection does to only select visible ones
+        const searchTerm = (document.getElementById('search-players')?.value || '').toLowerCase();
+        const filteredPlayers = this.state.players.filter(p => 
+            p.name.toLowerCase().includes(searchTerm)
+        );
+        
+        for (let i = 0; i < Math.min(filteredPlayers.length, required); i++) {
+            this.state.selectedPlayers.push(filteredPlayers[i].id);
+        }
+        
+        this.renderPlayerSelection();
+    },
+
+    togglePlayerSelection(player) {
+        const playerId = player.id || player;
         const index = this.state.selectedPlayers.indexOf(playerId);
         
         const numTeams = parseInt(document.getElementById('num-teams').value);
@@ -344,14 +385,12 @@ const app = {
 
         if (index > -1) {
             this.state.selectedPlayers.splice(index, 1);
-            element.classList.remove('selected');
         } else {
             if (this.state.selectedPlayers.length >= required) {
                 alert(`Você já selecionou os ${required} jogadores necessários!`);
                 return;
             }
             this.state.selectedPlayers.push(playerId);
-            element.classList.add('selected');
         }
         
         // Re-render item specific icons
