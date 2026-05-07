@@ -106,5 +106,11 @@
     "name": "Andrew",
     "skill": 4,
     "photo": "/static/images/jogadores/andrew.jpeg"
+  },
+  {
+    "id": 19,
+    "name": "Jairo Davi",
+    "skill": 3,
+    "photo": "/static/images/jogadores/davi.jpeg"
   }
 ]
